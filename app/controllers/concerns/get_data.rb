@@ -12,5 +12,6 @@ module GetData
         url.shortcode = (0...6).map{ charset[rand(charset.size)] }.join
         url.save!
       end
+      url
   end
 end

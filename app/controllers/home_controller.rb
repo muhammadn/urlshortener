@@ -8,7 +8,7 @@ class HomeController < ApplicationController
 
   def create
     begin
-      url_data(params)
+      url = url_data(params)
 
       respond_to do |format|
         format.html { redirect_to home_path(shortcode: url.shortcode), notice: 'Click your short url below' }
@@ -33,8 +33,7 @@ class HomeController < ApplicationController
 
   def add
     begin 
-        url_data(params) 
-
+        url = url_data(params) 
         render json: {link:
                        {url: url.url,
                          short_url: url.shortcode},
