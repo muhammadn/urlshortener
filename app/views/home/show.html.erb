@@ -1,7 +1,7 @@
     <% if @url.present? %>
       <h6 class="text-center text-success">
         <a href="<%= request.protocol %><%= request.host_with_port %>/<%= @url.shortcode %>">
-          Click here for the URL: <%= request.protocol %><%= request.host_with_port %>/<%= @url.shortcode %></h1>
+          Shortened URL: <%= request.protocol %><%= request.host_with_port %>/<%= @url.shortcode %></h1>
         </a>
       </h6>
     <% end %>
