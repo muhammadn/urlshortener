@@ -1,5 +1,6 @@
 class HomeController < ApplicationController
   skip_before_action :verify_authenticity_token, only: [:add]
+  include GetData
 
   def show
     @url = Url.find_by(shortcode: params[:shortcode])
@@ -7,25 +8,12 @@ class HomeController < ApplicationController
 
   def create
     begin
-      charset = ('a'..'z').to_a + ('A'..'Z').to_a + (0..9).to_a
-
-      # raise error when there is no url parameter
-      raise RuntimeError, "url parameter is empty" if params.dig(:url, :url).nil?
-      # raise error when url is invalid - this includes http:// and https://
-      raise RuntimeError, "invalid URL" if params[:url][:url] !~ /^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?$/ix
-      # if everything is okay, then continue
-      url = Url.find_by(url: params[:url][:url])
-
-      if url.nil?
-        url = Url.new(url_params)
-	url.shortcode = (0...6).map{ charset[rand(charset.size)] }.join
-        url.save!
-      end	
+      url_data(params)
 
       respond_to do |format|
-        format.html { redirect_to home_path(shortcode: url.shortcode), notice: 'Here is your shortened URL'}
+        format.html { redirect_to home_path(shortcode: url.shortcode), notice: 'Click your short url below' }
       end
-    rescue RuntimeError => e
+    rescue ActiveRecord::RecordInvalid, RuntimeError => e
       flash[:error] = e.message
       redirect_to home_path
     end
@@ -45,33 +33,14 @@ class HomeController < ApplicationController
 
   def add
     begin 
-      charset = ('a'..'z').to_a + ('A'..'Z').to_a + (0..9).to_a
- 
-      # raise error when there is no url parameter
-      raise RuntimeError, "url parameter is empty" if params.dig(:url, :url).nil?
-      # raise error when url is invalid - this includes http:// and https://
-      raise RuntimeError, "invalid URL" if params[:url][:url] !~ /^(http|https):\/\/[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}(:[0-9]{1,5})?(\/.*)?$/ix
-      # if everything is okay, then continue
-      url = Url.find_by(url: params[:url][:url])
+        url_data(params) 
 
-      if url
         render json: {link:
                        {url: url.url,
                          short_url: url.shortcode},
                          errors: []
                      }
-      else	
-        # make sure new url does have parameter sanization (url_params)
-        url = Url.new(url_params)
-        url.shortcode = (0...6).map{ charset[rand(charset.size)] }.join
-        url.save
-        render json: {link:
-                       {url: url.url,
-                         short_url: url.shortcode},
-                         errors: []
-                     }
-      end
-    rescue RuntimeError => e
+    rescue ActiveRecord::RecordInvalid, RuntimeError => e
       render json: {link: {url: 'invalid', short_url: 'invalid'}, errors: [error: e.message] }
     end
   end
