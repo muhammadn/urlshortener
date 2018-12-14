@@ -1,0 +1,24 @@
+    <% if @url.present? %>
+      <h6 class="text-center text-success">
+        <a href="<%= request.protocol %><%= request.host_with_port %>/<%= @url.shortcode %>">
+          Click here for the URL: <%= request.protocol %><%= request.host_with_port %>/<%= @url.shortcode %></h1>
+        </a>
+      </h6>
+    <% end %>
+    <div class="row">
+      <div class="col-md-5"></div>
+      <div class="col-md-4"><h1>Urgle</h1></div>
+      <div class="col-md-4"></div>
+    </div>
+    <%= form_tag('/') do %>
+        <div class="form-group"> 
+            <input class="form-control form-control-lg" name="url[url]" placeholder="URL to shorten" type="text">
+        </div>
+	<div class="row">
+          <div class="col-md-5"></div>
+            <div class="form-group">
+	      <div><button class="btn btn-info btn-lg btn-block">Shorten Now!</button></div>
+	    </div>
+          <div class="col-md-5"></div>
+	</div>
+    <% end %>
