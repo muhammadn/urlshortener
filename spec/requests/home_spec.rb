@@ -20,7 +20,7 @@ RSpec.describe "Home", type: :request do
       expect(response).to have_http_status(302)
       follow_redirect!
 
-      expect(response.body).to include("Here is your shortened URL")
+      expect(response.body).to include("Click your short url below")
     end
 
     it "should have the new variable" do
@@ -38,7 +38,7 @@ RSpec.describe "Home", type: :request do
       expect(response).to have_http_status(302)
       follow_redirect!
 
-      expect(response.body).to include("url parameter is empty")
+      expect(response.body).to include("URL parameter is missing!")
     end
 
     it "should show error if there url is invalid" do
@@ -46,7 +46,7 @@ RSpec.describe "Home", type: :request do
       expect(response).to have_http_status(302)
       follow_redirect!
 
-      expect(response.body).to include("invalid URL")
+      expect(response.body).to include("Validation failed: Url Invalid URL")
     end
   end
 
